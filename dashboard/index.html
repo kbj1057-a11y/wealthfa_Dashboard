@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Intelligence Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">⚡</div>
+                    <div>
+                        <h1 class="logo-title">Antigravity Intelligence Hub</h1>
+                        <p class="logo-subtitle">실시간 지식 자동화 모니터링</p>
+                    </div>
+                </div>
+                <div class="status-badge" id="systemStatus">
+                    <span class="status-dot"></span>
+                    <span>시스템 가동 중</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Overview -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">📰</div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="totalArticles">0</h3>
+                        <p class="stat-label">수집된 뉴스</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📤</div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="uploadedArticles">0</h3>
+                        <p class="stat-label">업로드 완료</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚙️</div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="activeTasks">0</h3>
+                        <p class="stat-label">실행 중 작업</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🕐</div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="lastUpdate">-</h3>
+                        <p class="stat-label">최근 업데이트</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Automation Scripts -->
+            <section class="scripts-section">
+                <h2 class="section-title">자동화 스크립트</h2>
+                <div class="scripts-grid" id="scriptsGrid">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+            </section>
+
+            <!-- Recent News -->
+            <section class="news-section">
+                <h2 class="section-title">최근 수집 뉴스</h2>
+                <div class="news-list" id="newsList">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+            </section>
+
+            <!-- Activity Log -->
+            <section class="log-section">
+                <h2 class="section-title">실시간 활동 로그</h2>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry">
+                        <span class="log-time">시스템 대기 중...</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Task Execution Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">작업 실행 중</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="modal-log" id="modalLog">
+                    <!-- 실시간 로그 표시 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

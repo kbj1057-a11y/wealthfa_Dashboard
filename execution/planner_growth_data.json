@@ -1,0 +1,74 @@
+[
+  {
+    "level": "Level 1: 루키 (Rookie)",
+    "description": "보험 영업의 기본 자격을 갖추고 시장에 안착하는 단계",
+    "steps": [
+      {
+        "id": "1-1",
+        "title": "자격 및 윤리 (Foundation)",
+        "task": "생명/손해/제3보험 설계사 자격증 취득 및 윤리 교육 이수",
+        "condition": "자격 시험 합격 및 서약 완료"
+      },
+      {
+        "id": "1-2",
+        "title": "상품 마스터 (Product Literacy)",
+        "task": "주요 상품군(암, 실손, 종신) 담보 및 약관 숙지",
+        "condition": "상품 구조 테스트 5종 통과"
+      },
+      {
+        "id": "1-3",
+        "title": "화법 입문 (First Contact)",
+        "task": "거절 처리 화법 및 TA 스크립트 연습",
+        "condition": "RP 10회 및 피드백 반영"
+      }
+    ]
+  },
+  {
+    "level": "Level 2: 프로 (Professional)",
+    "description": "고객별 맞춤형 재무 솔루션을 제공하고 관계를 관리하는 단계",
+    "steps": [
+      {
+        "id": "2-1",
+        "title": "보장 분석 전문가 (Risk Analysis)",
+        "task": "고객 보험 현황 분석 및 보장 공백 도출",
+        "condition": "보장 분석 리포트 5건 작성"
+      },
+      {
+        "id": "2-2",
+        "title": "심화 컨설팅 (Financial Solution)",
+        "task": "장기 재무 설계 및 라이프사이클 컨설팅",
+        "condition": "재무 포트폴리오 3건 제안"
+      },
+      {
+        "id": "2-3",
+        "title": "고객 관리 마스터 (CRM)",
+        "task": "가망 고객 발굴 시스템 및 사후 관리 프로세스 구축",
+        "condition": "CRM 시스템 20명 등록"
+      }
+    ]
+  },
+  {
+    "level": "Level 3: 마스터 (Master)",
+    "description": "고액 자산가/법인 시장 개척 및 리더로서 지식을 공유하는 단계",
+    "steps": [
+      {
+        "id": "3-1",
+        "title": "VIP/법인 컨설팅 (Special Market)",
+        "task": "세무/노무 연계 상속 및 CEO 플랜 컨설팅",
+        "condition": "VIP 대상 제안서 및 PT 진행"
+      },
+      {
+        "id": "3-2",
+        "title": "멘토링 및 리더십 (Mentoring)",
+        "task": "본인 노하우 문서화 및 후배 교육 자료 제작",
+        "condition": "팀 내 교육 세미나 1회 진행"
+      },
+      {
+        "id": "3-3",
+        "title": "디지털 트랜스포메이션 (AI & Tech)",
+        "task": "AI 도구 활용 상담 자료 생성 및 자동화",
+        "condition": "업무 자동화 도구 1건 이상 적용"
+      }
+    ]
+  }
+]

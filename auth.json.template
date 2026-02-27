@@ -1,0 +1,13 @@
+{
+  "cookies": {
+    "SID": "YOUR_SID_HERE",
+    "HSID": "YOUR_HSID_HERE",
+    "SSID": "YOUR_SSID_HERE",
+    "APISID": "YOUR_APISID_HERE",
+    "SAPISID": "YOUR_SAPISID_HERE",
+    "__Secure-1PSID": "YOUR_SECURE_1PSID_HERE",
+    "__Secure-3PSID": "YOUR_SECURE_3PSID_HERE"
+  },
+  "csrf_token": "YOUR_CSRF_TOKEN_HERE",
+  "session_id": "YOUR_SESSION_ID_HERE"
+}
