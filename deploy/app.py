@@ -186,6 +186,40 @@ def load_data():
 
     df_life['보험군']   = '생명보험'
     df_damage['보험군'] = '손해보험'
+
+    # ── v3 파일 컬럼 → app 컬럼 매핑 ───────────────────────────
+    # v3 구조: 수수료계(Z열), 환산성적(Y열·생명), 수정보험료(Y열·손해), 보험료(I열)
+    def _num(df, col, fallback=None):
+        """컬럼을 수치형으로 안전하게 변환, 없으면 fallback 또는 0"""
+        if col in df.columns:
+            return pd.to_numeric(df[col], errors='coerce').fillna(0)
+        if fallback and fallback in df.columns:
+            return pd.to_numeric(df[fallback], errors='coerce').fillna(0)
+        return pd.Series([0.0] * len(df), index=df.index)
+
+    def _zero(df):
+        return pd.Series([0.0] * len(df), index=df.index)
+
+    # 지사수수료 ← 수수료계 (Z열, 생명/손해 공통)
+    df_life['지사수수료']   = _num(df_life,   '수수료계')
+    df_damage['지사수수료'] = _num(df_damage, '수수료계')
+
+    # 생명 업적지표
+    #   업적지표1 ← 환산성적 (생명 Y열: 환산 환산성적)
+    #   업적지표2 ← 보험료   (생명 I열: 실제 보험료)
+    #   업적지표3 = 0 (손해 전용)
+    df_life['업적지표1'] = _num(df_life, '환산성적')
+    df_life['업적지표2'] = _num(df_life, '보험료')
+    df_life['업적지표3'] = _zero(df_life)
+
+    # 손해 업적지표
+    #   업적지표1,2 = 0 (생명 전용)
+    #   업적지표3 ← 수정보험료 (손해 Y열), fallback: 보험료
+    df_damage['업적지표1'] = _zero(df_damage)
+    df_damage['업적지표2'] = _zero(df_damage)
+    df_damage['업적지표3'] = _num(df_damage, '수정보험료', '보험료')
+    # ──────────────────────────────────────────────────────────
+
     df_all = pd.concat([df_life, df_damage], ignore_index=True)
 
     # 날짜 정제
@@ -193,12 +227,6 @@ def load_data():
         df_all['계약일자_정제'] = pd.to_datetime(df_all['계약일자'], errors='coerce').dt.strftime('%Y-%m-%d')
     else:
         df_all['계약일자_정제'] = ''
-
-    # 수치형 컬럼 처리
-    numeric_cols = ['지사수수료', '업적지표1', '업적지표2', '업적지표3']
-    for c in numeric_cols:
-        if c in df_all.columns:
-            df_all[c] = pd.to_numeric(df_all[c], errors='coerce').fillna(0)
 
     text_cols = ['증권번호', '계약일자', '계약자', 'FC명', '제휴사명', '상품명', '상품군', '지급구분']
     for c in text_cols:

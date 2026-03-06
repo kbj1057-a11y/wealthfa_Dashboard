@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>26년 2월 웰스 MVP · Eclipse Reveal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;700;900&family=Montserrat:wght@100;300;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: 'Noto Sans KR', 'Montserrat', sans-serif;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    /* ══════════════════════════════════════
+   배경 별 파티클
+══════════════════════════════════════ */
+    .star {
+      position: fixed;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.55);
+      animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from {
+        opacity: 0.08;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 0.65;
+        transform: scale(1.2);
+      }
+    }
+
+    /* ══════════════════════════════════════
+   PHASE 1 : Golden Corona Eclipse
+══════════════════════════════════════ */
+    #phase1 {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      z-index: 10;
+    }
+
+    /* 트로피 래퍼 */
+    .eclipse-moon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      /* 초기 glow 없음 */
+      filter: drop-shadow(0 0 0px rgba(212, 175, 55, 0));
+    }
+
+    /* 트로피 SVG 자체 */
+    .trophy-svg {
+      width: clamp(220px, 28vw, 360px);
+      height: auto;
+      display: block;
+    }
+
+    /* 코로나 맥동 — filter drop-shadow */
+    @keyframes glow-pulse {
+      0% {
+        filter:
+          drop-shadow(0 0 18px rgba(212, 175, 55, 0.70)) drop-shadow(0 0 50px rgba(212, 175, 55, 0.40)) drop-shadow(0 0 100px rgba(255, 200, 50, 0.18));
+      }
+
+      50% {
+        filter:
+          drop-shadow(0 0 38px rgba(255, 220, 60, 1)) drop-shadow(0 0 90px rgba(212, 175, 55, 0.70)) drop-shadow(0 0 180px rgba(255, 200, 50, 0.35));
+      }
+
+      100% {
+        filter:
+          drop-shadow(0 0 18px rgba(212, 175, 55, 0.70)) drop-shadow(0 0 50px rgba(212, 175, 55, 0.40)) drop-shadow(0 0 100px rgba(255, 200, 50, 0.18));
+      }
+    }
+
+    /* 코로나 최대 폭발 */
+    @keyframes glow-explode {
+      0% {
+        filter:
+          drop-shadow(0 0 50px rgba(255, 230, 80, 1)) drop-shadow(0 0 120px rgba(212, 175, 55, 0.85)) drop-shadow(0 0 240px rgba(255, 180, 30, 0.45));
+      }
+
+      100% {
+        filter:
+          drop-shadow(0 0 80px rgba(255, 240, 100, 1)) drop-shadow(0 0 180px rgba(212, 175, 55, 1)) drop-shadow(0 0 360px rgba(255, 180, 30, 0.60));
+      }
+    }
+
+    /* 텍스트 — 트로피 컵 중앙부에 겹치도록 위치 조정 */
+    .eclipse-text {
+      position: absolute;
+      top: 28%;
+      /* 트로피 컵 상단부 35% 위치 */
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      white-space: nowrap;
+      opacity: 0;
+      z-index: 3;
+      background: linear-gradient(180deg,
+          #FFF8DC 0%,
+          #FFD700 30%,
+          #D4AF37 60%,
+          #B8860B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: none;
+    }
+
+    .eclipse-text .main-line {
+      display: block;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 900;
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      letter-spacing: 0.22em;
+      line-height: 1.25;
+    }
+
+    .eclipse-text .sub-line {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: clamp(0.7rem, 1.2vw, 1rem);
+      letter-spacing: 0.55em;
+      margin-top: 14px;
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), rgba(255, 215, 0, 0.9), rgba(212, 175, 55, 0.5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: none;
+    }
+
+    /* 텍스트 페이드인 (줌 없이 순수 등장) */
+    @keyframes text-emerge {
+      from {
+        opacity: 0;
+        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.2));
+      }
+
+      to {
+        opacity: 1;
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 70px rgba(212, 175, 55, 0.6));
+      }
+    }
+
+    /* 텍스트 최대 발광 유지 */
+    @keyframes text-peak {
+      from {
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 70px rgba(212, 175, 55, 0.6));
+      }
+
+      to {
+        filter: drop-shadow(0 0 50px rgba(255, 240, 100, 1)) drop-shadow(0 0 120px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 200px rgba(212, 175, 55, 0.4));
+      }
+    }
+
+    /* 화면 전체 플래시 레이어 */
+    #flash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%,
+          rgba(255, 220, 80, 0) 0%, rgba(255, 220, 80, 0) 100%);
+      pointer-events: none;
+      z-index: 6;
+      transition: background 1.5s ease;
+    }
+
+    /* ══════════════════════════════════════
+   PHASE 2 : Reveal — 좌우 MVP
+══════════════════════════════════════ */
+    #phase2 {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      z-index: 10;
+    }
+
+    .mvp-panel {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      opacity: 0;
+    }
+
+    .divider {
+      width: 1px;
+      height: 60vh;
+      background: linear-gradient(to bottom,
+          transparent, rgba(212, 175, 55, 0.3) 30%, rgba(212, 175, 55, 0.3) 70%, transparent);
+      align-self: center;
+      flex-shrink: 0;
+      opacity: 0;
+    }
+
+    .panel-badge {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: clamp(0.75rem, 1.2vw, 1rem);
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0.5;
+    }
+
+    .panel-badge.gold {
+      color: #D4AF37;
+    }
+
+    .panel-badge.blue {
+      color: #6ECFFF;
+    }
+
+    .panel-label {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 300;
+      font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+      letter-spacing: 0.25em;
+      margin-bottom: 28px;
+      color: rgba(255, 255, 255, 0.32);
+    }
+
+    .mvp-crown {
+      font-size: clamp(2.8rem, 4vw, 3.8rem);
+      margin-bottom: 10px;
+    }
+
+    .mvp-name {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 900;
+      font-size: clamp(3rem, 6.5vw, 5.8rem);
+      line-height: 1;
+      letter-spacing: 0.06em;
+      margin-bottom: 18px;
+    }
+
+    .mvp-name.gold {
+      color: #FFD700;
+      text-shadow:
+        0 0 16px rgba(255, 215, 0, 0.9),
+        0 0 40px rgba(212, 175, 55, 0.7),
+        0 0 90px rgba(212, 175, 55, 0.3),
+        0 0 160px rgba(212, 175, 55, 0.1);
+    }
+
+    .mvp-name.blue {
+      color: #A8EEFF;
+      text-shadow:
+        0 0 16px rgba(110, 207, 255, 0.95),
+        0 0 40px rgba(110, 207, 255, 0.65),
+        0 0 90px rgba(110, 207, 255, 0.3),
+        0 0 160px rgba(110, 207, 255, 0.1);
+    }
+
+    .mvp-value {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.3rem, 2.5vw, 2rem);
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .mvp-value .num {
+      color: #FFD700;
+      font-size: 1.3em;
+    }
+
+    .mvp-value .unit {
+      color: rgba(212, 175, 55, 0.6);
+      font-size: 0.8em;
+    }
+
+    /* ══════════════════════════════════════
+   PHASE 3 : Breathing Glow
+══════════════════════════════════════ */
+    @keyframes breathe-gold {
+
+      0%,
+      100% {
+        text-shadow:
+          0 0 16px rgba(255, 215, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.7),
+          0 0 90px rgba(212, 175, 55, 0.3);
+      }
+
+      50% {
+        text-shadow:
+          0 0 30px rgba(255, 215, 0, 1), 0 0 70px rgba(212, 175, 55, 1),
+          0 0 140px rgba(212, 175, 55, 0.6), 0 0 220px rgba(212, 175, 55, 0.2);
+      }
+    }
+
+    @keyframes breathe-blue {
+
+      0%,
+      100% {
+        text-shadow:
+          0 0 16px rgba(110, 207, 255, 0.95), 0 0 40px rgba(110, 207, 255, 0.65),
+          0 0 90px rgba(110, 207, 255, 0.3);
+      }
+
+      50% {
+        text-shadow:
+          0 0 30px rgba(110, 207, 255, 1), 0 0 70px rgba(110, 207, 255, 0.9),
+          0 0 140px rgba(110, 207, 255, 0.5), 0 0 220px rgba(110, 207, 255, 0.2);
+      }
+    }
+
+    .breathing-gold {
+      animation: breathe-gold 2.8s ease-in-out infinite;
+    }
+
+    .breathing-blue {
+      animation: breathe-blue 2.8s ease-in-out infinite 0.5s;
+    }
+
+    /* ══════════════════════════════════════
+   전환 오버레이 (블랙아웃)
+══════════════════════════════════════ */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 100;
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    /* 하단 워터마크 */
+    #watermark {
+      position: fixed;
+      bottom: 22px;
+      right: 34px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 100;
+      font-size: 0.7rem;
+      color: rgba(212, 175, 55, 0.15);
+      letter-spacing: 0.3em;
+      z-index: 20;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 화면 플래시 레이어 -->
+  <div id="flash"></div>
+
+  <!-- 전환 오버레이 -->
+  <div id="overlay"></div>
+
+  <!-- ═══ Phase 1 : Golden Corona Eclipse ═══ -->
+  <div id="phase1">
+    <div class="eclipse-moon" id="moon">
+      <!-- 대형 트로피 실루엣 SVG (배경과 살짝 다른 #080808 → 글로우 대비 생성) -->
+      <svg class="trophy-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+        <!-- 트로피 컵 본체 -->
+        <path d="M52 18 H148 V98 C148 138 106 158 100 158 C94 158 52 138 52 98 Z" fill="#080808"
+          stroke="rgba(212,175,55,0.15)" stroke-width="1.5" />
+        <!-- 좌측 핸들 -->
+        <path d="M52 36 C22 36 16 70 30 86 C38 95 52 90 52 90" fill="none" stroke="rgba(212,175,55,0.15)"
+          stroke-width="3" stroke-linecap="round" />
+        <!-- 우측 핸들 -->
+        <path d="M148 36 C178 36 184 70 170 86 C162 95 148 90 148 90" fill="none" stroke="rgba(212,175,55,0.15)"
+          stroke-width="3" stroke-linecap="round" />
+        <!-- 받침대 기둥 -->
+        <rect x="87" y="158" width="26" height="40" fill="#080808" stroke="rgba(212,175,55,0.10)" stroke-width="1" />
+        <!-- 받침 플레이트 -->
+        <rect x="52" y="198" width="96" height="16" rx="4" fill="#080808" stroke="rgba(212,175,55,0.15)"
+          stroke-width="1.2" />
+        <!-- 받침 베이스 -->
+        <rect x="38" y="214" width="124" height="14" rx="5" fill="#080808" stroke="rgba(212,175,55,0.15)"
+          stroke-width="1.2" />
+        <!-- 컵 하단 받침 곡선 -->
+        <path d="M52 98 Q100 115 148 98" fill="none" stroke="rgba(212,175,55,0.10)" stroke-width="1" />
+      </svg>
+      <!-- 텍스트: 트로피 컵 중앙(위쪽 60%) 위치에 absolute -->
+      <div class="eclipse-text" id="eclipse-text">
+        <span class="main-line">26년 2월<br>웰스 MVP</span>
+        <span class="sub-line">WEALTH FA · FEBRUARY 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Phase 2 : MVP Reveal ═══ -->
+  <div id="phase2">
+    <div class="mvp-panel" id="panel-p">
+      <div class="panel-badge gold">Monthly P</div>
+      <div class="panel-label">월 실적 MVP</div>
+      <div class="mvp-crown">🏆</div>
+      <div class="mvp-name gold" id="name-p">김혜경</div>
+    </div>
+
+    <div class="divider" id="divider"></div>
+
+    <div class="mvp-panel" id="panel-c">
+      <div class="panel-badge blue">Activity</div>
+      <div class="panel-label">활동 MVP</div>
+      <div class="mvp-crown">⚡</div>
+      <div class="mvp-name blue" id="name-c">송창수</div>
+      <div class="mvp-value">
+        <span class="num">20</span><span class="unit"> 건</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 워터마크 -->
+  <div id="watermark">WEALTH FA · 2026</div>
+
+  <script>
+    /* ── 배경 별 생성 ── */
+    (function () {
+      for (var i = 0; i < 65; i++) {
+        var s = document.createElement('div');
+        s.className = 'star';
+        var sz = Math.random() * 2 + 0.8;
+        s.style.cssText = `width:${sz}px;height:${sz}px;
+      top:${Math.random() * 100}%;left:${Math.random() * 100}%;
+      --d:${(Math.random() * 4 + 2).toFixed(1)}s;
+      animation-delay:${(Math.random() * 6).toFixed(1)}s;`;
+        document.body.appendChild(s);
+      }
+    })();
+
+    /* ── 엘리먼트 참조 ── */
+    var overlay = document.getElementById('overlay');
+    var phase1 = document.getElementById('phase1');
+    var phase2 = document.getElementById('phase2');
+    var moon = document.getElementById('moon');
+    var eclText = document.getElementById('eclipse-text');
+    var flash = document.getElementById('flash');
+    var panelP = document.getElementById('panel-p');
+    var panelC = document.getElementById('panel-c');
+    var divider = document.getElementById('divider');
+    var nameP = document.getElementById('name-p');
+    var nameC = document.getElementById('name-c');
+
+    /* ── 타임라인 실행 ── */
+    function runTimeline() {
+
+      // ── 초기화
+      overlay.style.transition = 'none'; overlay.style.opacity = '1';
+      phase1.style.transition = 'none'; phase1.style.opacity = '0';
+      phase2.style.transition = 'none'; phase2.style.opacity = '0';
+      panelP.style.transition = 'none'; panelP.style.opacity = '0';
+      panelC.style.transition = 'none'; panelC.style.opacity = '0';
+      divider.style.transition = 'none'; divider.style.opacity = '0';
+      moon.style.animation = 'none';
+      moon.style.filter = 'none';
+      eclText.style.animation = 'none';
+      eclText.style.opacity = '0';
+      eclText.style.filter = 'none';
+      flash.style.background = 'radial-gradient(ellipse 70% 70% at 50% 50%,rgba(255,220,80,0)0%,rgba(255,220,80,0)100%)';
+      nameP.classList.remove('breathing-gold');
+      nameC.classList.remove('breathing-blue');
+
+      // ── 0.3s: 오버레이 페이드아웃 (칠흑에서 출발)
+      setTimeout(function () {
+        overlay.style.transition = 'opacity 0.7s ease';
+        overlay.style.opacity = '0';
+      }, 300);
+
+      // ── 0.8s: Phase1 등장 (phase1 컨테이너)
+      setTimeout(function () {
+        phase1.style.transition = 'opacity 0.5s ease';
+        phase1.style.opacity = '1';
+        // 달은 보이지만 글로우 없음 — 절대 어둠 느낌
+        moon.style.filter = 'none'; /* Changed from boxShadow to filter */
+      }, 800);
+
+      // ── 1.0s: 코로나 발화 시작
+      setTimeout(function () {
+        moon.style.transition = 'filter 1.2s ease';
+        moon.style.filter = `
+      drop-shadow(0 0 20px rgba(212,175,55,0.65))
+      drop-shadow(0 0 55px rgba(212,175,55,0.35))
+      drop-shadow(0 0 120px rgba(255,200,50,0.16))`;
+        // 맥동 애니메이션
+        setTimeout(function () {
+          moon.style.animation = 'glow-pulse 1.6s ease-in-out infinite';
+        }, 1200);
+      }, 1000);
+
+      // ── 3.0s: 텍스트 즉시 등장 (Fade 없이 바로 표시)
+      setTimeout(function () {
+        eclText.style.transition = 'none';
+        eclText.style.opacity = '1';
+        eclText.style.filter =
+          'drop-shadow(0 0 28px rgba(255,215,0,0.95)) drop-shadow(0 0 65px rgba(212,175,55,0.65))';
+      }, 3000);
+
+      // ── 5.0s: 절정 — 트로피 코로나 최대 발광 (텍스트는 유지)
+      setTimeout(function () {
+        moon.style.animation = 'glow-explode 1.5s ease-in-out infinite alternate';
+        flash.style.transition = 'background 1s ease';
+        flash.style.background = 'radial-gradient(ellipse 65% 65% at 50% 50%,rgba(255,210,60,0.08)0%,transparent 70%)';
+        // 텍스트 filter 고정 유지 (애니메이션 X)
+        eclText.style.filter =
+          'drop-shadow(0 0 40px rgba(255,230,80,1)) drop-shadow(0 0 100px rgba(212,175,55,0.9))';
+      }, 5000);
+
+      // ── 6.5s: Phase 2 패널들 서서히 등장 (블랙아웃 없이 크로스페이드)
+      setTimeout(function () {
+        phase2.style.transition = 'opacity 0.1s';
+        phase2.style.opacity = '1';
+
+        // Phase1 트로피+텍스트는 서서히 fade-out
+        phase1.style.transition = 'opacity 1.4s ease';
+        phase1.style.opacity = '0';
+        flash.style.transition = 'background 1.2s ease';
+        flash.style.background = 'radial-gradient(ellipse 70% 70% at 50% 50%,rgba(255,220,80,0.03)0%,transparent 70%)';
+      }, 6500);
+
+      // ── 7.0s: 좌 패널
+      setTimeout(function () {
+        panelP.style.transition = 'opacity 1.3s ease';
+        panelP.style.opacity = '1';
+      }, 7000);
+
+      // ── 7.8s: 분리선
+      setTimeout(function () {
+        divider.style.transition = 'opacity 0.9s ease';
+        divider.style.opacity = '1';
+      }, 7800);
+
+      // ── 8.4s: 우 패널
+      setTimeout(function () {
+        panelC.style.transition = 'opacity 1.3s ease';
+        panelC.style.opacity = '1';
+      }, 8400);
+
+      // ── 12.0s: Phase 3 — 브리딩 글로우
+      setTimeout(function () {
+        nameP.classList.add('breathing-gold');
+        nameC.classList.add('breathing-blue');
+        // 배경 플래시 은은하게
+        flash.style.transition = 'background 2s ease';
+        flash.style.background = 'radial-gradient(ellipse 90% 90% at 50% 50%,rgba(212,175,55,0.04)0%,transparent 70%)';
+      }, 12000);
+
+      // ── 19.2s: 블랙아웃 → 루프
+      setTimeout(function () {
+        overlay.style.transition = 'opacity 0.8s ease';
+        overlay.style.opacity = '1';
+        phase2.style.transition = 'opacity 0.6s ease';
+        phase2.style.opacity = '0';
+      }, 19200);
+
+      // ── 20.5s: 루프 재시작
+      setTimeout(runTimeline, 20500);
+    }
+
+    runTimeline();
+
+    // 더블클릭 → 전체화면
+    document.addEventListener('dblclick', function () {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  </script>
+</body>
+
+</html>
