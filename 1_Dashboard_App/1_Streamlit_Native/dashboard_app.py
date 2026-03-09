@@ -739,11 +739,11 @@ dmg_gen_only_df = damage_df[damage_df['지급구분'].astype(str).str.contains('
 
 # ── 부문별 데이터 매핑 (dialog에서 FC 클릭 시 참조)
 TOP5_DF_MAP = {
-    '생보_신계약': ('🔵 생보 신계약', life_new_df),
-    '생보_유지':   ('🟢 생보 유지',   life_ret_df),
-    '손보_신계약': ('🟠 손보 신계약', dmg_new_df),
-    '손보_유지':   ('🟣 손보 유지',   dmg_ret_df),
-    '손보_일반':   ('⚪ 손보 일반',   dmg_gen_only_df),
+    '생보_신계약': ('🔵 생명 익월 수수료', life_new_df),
+    '생보_유지':   ('🟢 생명 유지',   life_ret_df),
+    '손보_신계약': ('🟠 손해 익월', dmg_new_df),
+    '손보_유지':   ('🟣 손해 유지',   dmg_ret_df),
+    '손보_일반':   ('⚪ 손해 기타',   dmg_gen_only_df),
 }
 
 # ── 세션 초기화
@@ -834,7 +834,7 @@ def render_top5_card(title, color_accent, scope_key, fee_col='지사수수료'):
         padding: 16px 14px 10px 14px;
         margin-bottom: 4px;
     '>
-        <p style='color:#A0AEC0; font-weight:700; font-size:0.9rem;
+        <p style='color:#E2E8F0; font-weight:800; font-size:1.15rem;
                   margin-bottom:10px; letter-spacing:0.5px;'>{title}</p>
     </div>
     """, unsafe_allow_html=True)
@@ -879,11 +879,11 @@ def render_top5_card(title, color_accent, scope_key, fee_col='지사수수료'):
 
 # ── 5컬럼 렌더링
 c1, c2, c3, c4, c5 = st.columns(5)
-with c1: render_top5_card("🔵 생보 신계약", "#3B82F6", "생보_신계약")
-with c2: render_top5_card("🟢 생보 유지",   "#10B981", "생보_유지")
-with c3: render_top5_card("🟠 손보 신계약", "#F59E0B", "손보_신계약")
-with c4: render_top5_card("🟣 손보 유지",   "#8B5CF6", "손보_유지")
-with c5: render_top5_card("⚪ 손보 일반",   "#94A3B8", "손보_일반")
+with c1: render_top5_card("🔵 생명 익월 수수료", "#3B82F6", "생보_신계약")
+with c2: render_top5_card("🟢 생명 유지",   "#10B981", "생보_유지")
+with c3: render_top5_card("🟠 손해 익월", "#F59E0B", "손보_신계약")
+with c4: render_top5_card("🟣 손해 유지",   "#8B5CF6", "손보_유지")
+with c5: render_top5_card("⚪ 손해 기타",   "#94A3B8", "손보_일반")
 
 st.markdown("""
 <div style='text-align:center; color:#334155; font-size:0.72rem; margin-top:3rem; padding:1rem;
